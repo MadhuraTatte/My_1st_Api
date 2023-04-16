@@ -3,6 +3,9 @@ const {PostModel}=require("../model/post.model")
 
 const postRouter=express.Router();
 
+
+
+
 postRouter.post("/create",async(req,res)=>{
   const payload=req.body  
   const post=new PostModel(payload)
@@ -10,10 +13,15 @@ postRouter.post("/create",async(req,res)=>{
   res.send({"msg":"New post is created."})
 })
 
+
+
 postRouter.get("/",async(req,res)=>{
     const posts=await PostModel.find()
     res.send(posts)
 })
+
+
+
 
 postRouter.patch("/update/:postId",async(req,res)=>{
     const {postId}=req.params
@@ -22,6 +30,9 @@ postRouter.patch("/update/:postId",async(req,res)=>{
     res.send({"msg":"Post is updated."})
 
 })
+
+
+
 
 postRouter.delete("/delete/:postId",async(req,res)=>{
     const {postId}=req.params

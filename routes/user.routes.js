@@ -4,6 +4,8 @@ const {UserModel}=require("../model/user.model")
 const jwt=require("jsonwebtoken")
 const bcrypt=require("bcrypt")
 
+
+
 userRouter.post("/register",async(req,res)=>{
     try{
         const {name,email,gender,password,age,city}=req.body;
@@ -28,6 +30,8 @@ userRouter.post("/register",async(req,res)=>{
     }
 })
 
+
+
 userRouter.post("/login",async(req,res)=>{
     const {email,password}=req.body
     try{
@@ -36,8 +40,15 @@ userRouter.post("/login",async(req,res)=>{
         console.log(user)
         bcrypt.compare(password,user[0].password,(err,result)=>{
             if(result){
-                let token=jwt.sign({userID:user[0]._id},"masai")
-                res.status(200).send({"msg":"Logged in","token":token})
+                let token=jwt.sign({userID:user[0]._id},"masai",{expiresIn:60*60})
+
+                const refreshtoken=jwt.sign({userID:user[0]._id},"malhar",{expiresIn:60*60*24*7})
+
+                res.cookie("blogAccessToken",token,{maxAge:1000*60*60})
+                res.cookie("blogRefreshToken",refreshtoken,{maxAge:1000*60*60*24*7})
+
+
+                res.status(200).send({"msg":"Logged in","token":token,"refreshtoken":refreshtoken})
             }else{
                 res.send({"msg":"Wrong Credential"})
             }
